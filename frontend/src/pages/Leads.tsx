@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ListView from '../components/ListView';
+import LeadForm from '../components/Forms/LeadForm';
 import apiClient from '../services/apiClient';
 
 const LeadsPage: React.FC = () => {
@@ -9,6 +10,9 @@ const LeadsPage: React.FC = () => {
   const [leads, setLeads] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchLeads();
@@ -38,11 +42,20 @@ const LeadsPage: React.FC = () => {
   ];
 
   const handleNew = () => {
-    console.log('New Lead');
+    setFormMode('create');
+    setEditingId(null);
+    setFormOpen(true);
   };
 
   const handleEdit = (item: any) => {
-    console.log('Edit Lead:', item);
+    setFormMode('edit');
+    setEditingId(item.id);
+    setFormOpen(true);
+  };
+
+  const handleFormSuccess = () => {
+    setFormOpen(false);
+    fetchLeads();
   };
 
   const handleViewDetails = (item: any) => {
@@ -71,6 +84,13 @@ const LeadsPage: React.FC = () => {
         onViewDetails={handleViewDetails}
         onDelete={handleDelete}
         total={total}
+      />
+      <LeadForm
+        open={formOpen}
+        mode={formMode}
+        leadId={editingId || undefined}
+        onClose={() => setFormOpen(false)}
+        onSuccess={handleFormSuccess}
       />
     </Box>
   );

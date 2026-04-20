@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ListView from '../components/ListView';
+import ContactForm from '../components/Forms/ContactForm';
 import apiClient from '../services/apiClient';
 
 const ContactsPage: React.FC = () => {
@@ -9,6 +10,9 @@ const ContactsPage: React.FC = () => {
   const [contacts, setContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchContacts();
@@ -36,11 +40,20 @@ const ContactsPage: React.FC = () => {
   ];
 
   const handleNew = () => {
-    console.log('New Contact');
+    setFormMode('create');
+    setEditingId(null);
+    setFormOpen(true);
   };
 
   const handleEdit = (item: any) => {
-    console.log('Edit Contact:', item);
+    setFormMode('edit');
+    setEditingId(item.id);
+    setFormOpen(true);
+  };
+
+  const handleFormSuccess = () => {
+    setFormOpen(false);
+    fetchContacts();
   };
 
   const handleViewDetails = (item: any) => {
@@ -69,6 +82,13 @@ const ContactsPage: React.FC = () => {
         onViewDetails={handleViewDetails}
         onDelete={handleDelete}
         total={total}
+      />
+      <ContactForm
+        open={formOpen}
+        mode={formMode}
+        contactId={editingId || undefined}
+        onClose={() => setFormOpen(false)}
+        onSuccess={handleFormSuccess}
       />
     </Box>
   );

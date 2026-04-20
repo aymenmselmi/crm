@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Container } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ListView from '../components/ListView';
+import AccountForm from '../components/Forms/AccountForm';
 import apiClient from '../services/apiClient';
 
 const AccountsPage: React.FC = () => {
@@ -9,6 +10,9 @@ const AccountsPage: React.FC = () => {
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAccounts();
@@ -35,11 +39,20 @@ const AccountsPage: React.FC = () => {
   ];
 
   const handleNew = () => {
-    console.log('New Account');
+    setFormMode('create');
+    setEditingId(null);
+    setFormOpen(true);
   };
 
   const handleEdit = (item: any) => {
-    console.log('Edit Account:', item);
+    setFormMode('edit');
+    setEditingId(item.id);
+    setFormOpen(true);
+  };
+
+  const handleFormSuccess = () => {
+    setFormOpen(false);
+    fetchAccounts();
   };
 
   const handleViewDetails = (item: any) => {
@@ -68,6 +81,13 @@ const AccountsPage: React.FC = () => {
         onViewDetails={handleViewDetails}
         onDelete={handleDelete}
         total={total}
+      />
+      <AccountForm
+        open={formOpen}
+        mode={formMode}
+        accountId={editingId || undefined}
+        onClose={() => setFormOpen(false)}
+        onSuccess={handleFormSuccess}
       />
     </Box>
   );

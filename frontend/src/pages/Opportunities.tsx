@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ListView from '../components/ListView';
+import OpportunityForm from '../components/Forms/OpportunityForm';
 import apiClient from '../services/apiClient';
 
 const OpportunitiesPage: React.FC = () => {
@@ -9,6 +10,9 @@ const OpportunitiesPage: React.FC = () => {
   const [opportunities, setOpportunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [formOpen, setFormOpen] = useState(false);
+  const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchOpportunities();
@@ -36,11 +40,20 @@ const OpportunitiesPage: React.FC = () => {
   ];
 
   const handleNew = () => {
-    console.log('New Opportunity');
+    setFormMode('create');
+    setEditingId(null);
+    setFormOpen(true);
   };
 
   const handleEdit = (item: any) => {
-    console.log('Edit Opportunity:', item);
+    setFormMode('edit');
+    setEditingId(item.id);
+    setFormOpen(true);
+  };
+
+  const handleFormSuccess = () => {
+    setFormOpen(false);
+    fetchOpportunities();
   };
 
   const handleViewDetails = (item: any) => {
@@ -69,6 +82,13 @@ const OpportunitiesPage: React.FC = () => {
         onViewDetails={handleViewDetails}
         onDelete={handleDelete}
         total={total}
+      />
+      <OpportunityForm
+        open={formOpen}
+        mode={formMode}
+        opportunityId={editingId || undefined}
+        onClose={() => setFormOpen(false)}
+        onSuccess={handleFormSuccess}
       />
     </Box>
   );

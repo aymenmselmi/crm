@@ -52,14 +52,14 @@ export class LeadsController {
   }
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles('admin', 'manager', 'user')
   @HttpCode(201)
   async create(@Body(new ValidationPipe()) createDto: CreateLeadDto) {
     return this.leadService.create(createDto);
   }
 
   @Put(':id')
-  @Roles('admin', 'manager')
+  @Roles('admin', 'manager', 'user')
   async update(@Param('id') id: string, @Body(new ValidationPipe()) updateDto: UpdateLeadDto) {
     return this.leadService.update(id, updateDto);
   }

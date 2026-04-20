@@ -89,17 +89,17 @@ export class OpportunitiesController {
   }
 
   @Post()
-  @Roles('admin', 'manager')
+  @Roles('admin', 'manager', 'user')
   @HttpCode(201)
   async create(@Body(new ValidationPipe()) createDto: CreateOpportunityDto) {
     return this.opportunityService.create(createDto);
   }
 
   @Put(':id')
-  @Roles('admin', 'manager')
+  @Roles('admin', 'manager', 'user')
   async update(@Param('id') id: string, @Body(new ValidationPipe()) updateDto: UpdateOpportunityDto) {
     return this.opportunityService.update(id, updateDto);
-  }
+  
 
   @Delete(':id')
   @Roles('admin')

@@ -136,7 +136,7 @@ export class AccountsController {
    * @body CreateAccountDto
    */
   @Post()
-  @Roles('admin', 'manager')
+  @Roles('admin', 'manager', 'user')
   @HttpCode(201)
   async create(@Body(new ValidationPipe()) createDto: CreateAccountDto) {
     return this.accountService.create(createDto);
