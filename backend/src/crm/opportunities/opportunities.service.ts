@@ -66,7 +66,10 @@ export class OpportunityService {
     const dataSource = await this.databaseSwitcher.getDataSourceForOrganization(orgId);
     const repo = await this.getRepository(dataSource);
 
-    const opportunity = repo.create(data);
+    const opportunity = repo.create({
+      ...data,
+      tenantId: orgId,
+    });
     return repo.save(opportunity);
   }
 

@@ -67,7 +67,10 @@ export class ContactService {
     const dataSource = await this.databaseSwitcher.getDataSourceForOrganization(orgId);
     const repo = await this.getRepository(dataSource);
 
-    const contact = repo.create(data);
+    const contact = repo.create({
+      ...data,
+      tenantId: orgId,
+    });
     return repo.save(contact);
   }
 

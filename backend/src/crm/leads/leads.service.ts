@@ -68,7 +68,10 @@ export class LeadService {
     const dataSource = await this.databaseSwitcher.getDataSourceForOrganization(orgId);
     const repo = await this.getRepository(dataSource);
 
-    const lead = repo.create(data);
+    const lead = repo.create({
+      ...data,
+      tenantId: orgId,
+    });
     return repo.save(lead);
   }
 
@@ -139,6 +142,7 @@ export class LeadService {
       account = accountRepo.create({
         name: lead.company || `${lead.firstName} ${lead.lastName}`,
         type: 'prospect',
+        tenantId: orgId,
       });
       await accountRepo.save(account);
     }
@@ -153,6 +157,7 @@ export class LeadService {
       title: lead.title,
       accountId: account.id,
       status: 'active',
+      tenantId: orgId,
     });
     await contactRepo.save(contact);
 
@@ -167,6 +172,7 @@ export class LeadService {
       amount: lead.estimatedValue || 0,
       probability: 0,
       status: 'open',
+      tenantId: orgId,
     });
     await opportunityRepo.save(opportunity);
 

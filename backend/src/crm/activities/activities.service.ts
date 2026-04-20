@@ -65,7 +65,10 @@ export class ActivityService {
     const dataSource = await this.databaseSwitcher.getDataSourceForOrganization(orgId);
     const repo = await this.getRepository(dataSource);
 
-    const activity = repo.create(data);
+    const activity = repo.create({
+      ...data,
+      tenantId: orgId,
+    });
     return repo.save(activity);
   }
 
