@@ -1,0 +1,183 @@
+Cahier des Charges
+Projet de Fin d'etudes (PFE)
+Developpement d'un CRM Cloud Multi-Tenant
+
+
+1. Contexte et Objectifs
+1.1 Contexte
+
+Dans un environnement digitalise, les entreprises ont besoin d'outils flexibles pour gerer leurs relations clients. Une architecture cloud multi-tenant permet d'offrir une solution scalable, personnalisable et adaptee � plusieurs organisations (tenants) avec isolation des donnees.
+
+1.2 Problematique
+
+Les PME ont besoin d'un CRM flexible permettant : - Une personnalisation avanc�e des entit�s metier - Une isolation stricte des donn�es - Une gestion fine des acc�s (RBAC)
+
+1.3 Objectifs du projet
+
+� Concevoir un CRM cloud multi-tenant
+� Implementer une isolation par organisation avec base de donn�es dediee
+� Permettre la personnalisation dynamique des entit�s
+� Mettre en place un systeme RBAC robuste
+� Fournir un dashboard admin global
+
+
+2. Perimetre du Projet
+2.1 Multi-Tenancy
+
+� Gestion des organisations (tenants)
+� Chaque organisation poss�de sa propre base de donnees PostgreSQL
+� Isolation compl�te des donnees
+
+2.2 Gestion des utilisateurs
+
+� Authentification ( JWT)
+� Association utilisateur ? organisation
+� Gestion des r�les et permissions (RBAC)
+
+2.3 RBAC (Role-Based Access Control)
+
+� Definition de r�les (Admin, Manager, User...)
+� Permissions par module (CRUD)
+� Contr�le d'acc�s au niveau API
+
+2.4 Gestion dynamique des entit�s
+
+� Cr�ation d'entit�s personnalisees
+� Ajout/suppression de champs dynamiques
+� Configuration via interface admin
+
+2.5 Modules CRM
+
+Comptes (Accounts)
+
+� CRUD
+� Historique
+
+Contacts
+
+� Association avec comptes
+
+Leads
+
+� Gestion et conversion
+
+Opportunites
+
+� Pipeline de vente
+� Etapes configurables
+
+Activites
+
+� Taches, appels, notes
+
+2.6 Dashboard Organisation
+
+� KPIs personnalises
+� Statistiques
+
+2.7 Admin Dashboard (Global CRM)
+
+� Gestion des organisations
+� Monitoring (usage, performance)
+� Gestion des utilisateurs globaux
+
+
+3. Architecture Technique
+3.1 Architecture globale
+
+� Architecture multi-tenant
+� Backend modulaire
+� Frontend SPA
+
+3.2 Stack Technique
+
+Backend
+
+� NestJS (Node.js)
+� PostgreSQL (1 DB par tenant)
+� ORM : Drizzle / TypeORM
+
+Frontend
+
+� React (TypeScript)
+� TailwindCSS / NextUI
+
+DevOps
+
+� Docker
+� CI/CD
+
+
+4. Modelisation des Donn�es
+4.1 Entit�s principales
+
+� Organisation (Tenant)
+� Utilisateur
+� Role
+� Permission
+� Entite dynamique
+
+4.2 Relations
+
+� Une organisation possede plusieurs utilisateurs
+� Un utilisateur appartient � une organisation
+� Un role poss�de plusieurs permissions
+
+
+5. Contraintes
+5.1 Contraintes techniques
+
+� Isolation des donnees multi-tenant
+� S�curit� (RBAC, JWT)
+� Scalabilit�
+
+5.2 Contraintes organisationnelles
+
+� Respect du planning PFE
+� Documentation compl�te
+
+
+6. Planning Previsionnel
+
+Phase	Duree
+
+Analyse
+1-2 semaines
+Conception
+2 semaines
+Backend
+4 semaines
+Frontend
+4 semaines
+Tests
+2 semaines
+Documentation
+2 semaines
+
+7. Livrables
+
+� Code source
+� Documentation technique
+� Rapport PFE
+� Pr�sentation
+
+
+8. Crit�res de Reussite
+
+� Isolation correcte des tenants
+� RBAC fonctionnel
+� Entit�s dynamiques op�rationnelles
+� Dashboard admin fonctionnel
+
+
+9. �volutions Futures
+
+� Support multi-r�gion
+� Automatisation (workflows)
+� IA (scoring, recommandations)
+
+
+10. Conclusion
+Ce projet consiste � d�velopper un CRM cloud multi-tenant moderne bas� sur NestJS, PostgreSQL et React TypeScript, mettant l'accent sur l'isolation des donn�es, la personnalisation et la s�curit� via RBAC.
+
+

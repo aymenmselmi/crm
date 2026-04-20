@@ -1,0 +1,101 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UseGuards,
+  HttpCode,
+  Query,
+  BadRequestException,
+  ValidationPipe,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '@/rbac/guards/roles.guard';
+import { Roles } from '@/rbac/decorators/roles.decorator';
+import { LeadService } from './leads.service';
+import { CreateLeadDto, UpdateLeadDto } from './dto';
+
+/**
+ * Leads Controller
+ * CRUD operations with JWT auth, role-based access, tenant filtering
+ */
+@Controller('leads')
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+export class LeadsController {
+  constructor(private leadService: LeadService) {}
+
+  @Get()
+  @Roles('admin', 'manager', 'user')
+  async getAll(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    try {
+      const parsedLimit = limit ? parseInt(limit, 10) : 20;
+      const parsedOffset = offset ? parseInt(offset, 10) : 0;
+
+      if (isNaN(parsedLimit) || isNaN(parsedOffset)) {
+        throw new BadRequestException('limit and offset must be valid numbers');
+      }
+
+      return this.leadService.findAll(parsedLimit, parsedOffset);
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      throw new BadRequestException('Invalid pagination parameters');
+    }
+  }
+
+  @Get(':id')
+  @Roles('admin', 'manager', 'user')
+  async getById(@Param('id') id: string) {
+    return this.leadService.findById(id);
+  }
+
+  @Post()
+  @Roles('admin', 'manager')
+  @HttpCode(201)
+  async create(@Body(new ValidationPipe()) createDto: CreateLeadDto) {
+    return this.leadService.create(createDto);
+  }
+
+  @Put(':id')
+  @Roles('admin', 'manager')
+  async update(@Param('id') id: string, @Body(new ValidationPipe()) updateDto: UpdateLeadDto) {
+    return this.leadService.update(id, updateDto);
+  }
+
+  /**
+   * POST /leads/:id/convert
+   * Convert a lead into Contact, Account, and Opportunity
+   */
+  @Post(':id/convert')
+  @Roles('admin', 'manager')
+  @HttpCode(200)
+  async convertLead(@Param('id') id: string) {
+    return this.leadService.convertLead(id);
+  }
+
+  @Delete(':id')
+  @Roles('admin')
+  @HttpCode(204)
+  async delete(@Param('id') id: string) {
+    return this.leadService.delete(id);
+  }
+
+  @Get('search')
+  @Roles('admin', 'manager', 'user')
+  async search(@Query('query') query?: string, @Query('limit') limit?: string) {
+    if (!query || query.trim().length === 0) {
+      throw new BadRequestException('query parameter is required');
+    }
+
+    const parsedLimit = limit ? Math.min(parseInt(limit, 10), 100) : 20;
+    return this.leadService.search(query.trim(), parsedLimit);
+  }
+
+  @Get('stats/count')
+  @Roles('admin', 'manager', 'user')
+  async getCount() {
+    return { count: await this.leadService.count() };
+  }
+}
