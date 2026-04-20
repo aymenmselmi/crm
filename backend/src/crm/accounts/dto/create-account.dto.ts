@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsEnum, IsEmail, IsUrl, Min, Max, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsEnum, IsEmail, Min, Max, IsNumber } from 'class-validator';
 
 export class CreateAccountDto {
   @IsString()
@@ -13,7 +13,7 @@ export class CreateAccountDto {
   type?: 'prospect' | 'customer' | 'partner' | 'competitor';
 
   @IsOptional()
-  @IsUrl()
+  @IsString()
   website?: string;
 
   @IsOptional()
